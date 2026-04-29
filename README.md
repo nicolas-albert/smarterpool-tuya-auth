@@ -8,6 +8,8 @@ The primary use case is retrieving the Tuya `deviceId`, `localKey`, DPS values, 
 
 Experimental. It was built from reverse engineering of the Smarter Pool Android app and the Tuya OEM mobile API. The tool only performs login and read-only device information requests.
 
+The Smarter Pool Android app credentials for version `1.0.3 international` are bundled as the default app profile, so normal users should only need their Smarter Pool account credentials.
+
 ## Usage
 
 ```bash
@@ -45,16 +47,16 @@ Account credentials:
 - `SMARTERPOOL_COUNTRY_CODE`: phone country code, defaults to `33`.
 - `SMARTERPOOL_DEVICE_ID`: optional Tuya device id. If omitted, the CLI tries discovery. If exactly one device is discovered, it is inspected automatically.
 
-Tuya OEM app credentials:
+Optional Tuya OEM app credential overrides:
 
 - `SMARTERPOOL_APP_KEY`
 - `SMARTERPOOL_APP_SECRET`
 - `SMARTERPOOL_SECRET2`
-- `SMARTERPOOL_CERT_SIGN`, defaults to `A`.
-- `SMARTERPOOL_REGION`, defaults to `EU`.
-- `SMARTERPOOL_TTID`, defaults to `tuya_international`.
+- `SMARTERPOOL_CERT_SIGN`
+- `SMARTERPOOL_REGION`
+- `SMARTERPOOL_TTID`
 
-This repository intentionally does not bundle Smarter Pool / Tuya OEM app credentials. They are not user account secrets, but they are proprietary application credentials embedded in the mobile app. Provide your own values through environment variables.
+The bundled default profile comes from the public Smarter Pool Android app `1.0.3 international`. These values are not user account credentials, but they may stop working if Smarter Pool rotates app credentials in a future release. Use the override variables if you need to test another APK version.
 
 ## Home Assistant
 
@@ -76,6 +78,7 @@ For `tuya-local`, configure the device with its local IP address, `deviceId`, `l
   },
   "account": {
     "accountType": "email",
+    "appProfile": "smarter-pool-1.0.3-international",
     "countryCode": "33",
     "region": "EU"
   },
@@ -99,6 +102,12 @@ Options:
   --password <value>          Smarter Pool password
   --country-code <value>      Account country code, default 33
   --device-id <value>         Tuya device id to inspect
+  --app-key <value>           Tuya OEM app key override
+  --app-secret <value>        Tuya OEM app secret override
+  --secret2 <value>           Tuya OEM secret2 override
+  --cert-sign <value>         Tuya OEM cert sign override
+  --region <value>            Tuya region override
+  --ttid <value>              Tuya ttid override
   --env <path>                Load an env file, default .env when present
   --output <path>             Write JSON output to a file
   --raw                       Include raw API action results

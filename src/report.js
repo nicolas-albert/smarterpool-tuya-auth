@@ -40,6 +40,7 @@ function buildReport({ config, deviceDump, discovery }) {
     },
     account: {
       accountType: accountTypeFromLogin(config.login),
+      appProfile: config.appProfile,
       countryCode: config.countryCode,
       region: config.region,
       ttid: config.ttid,

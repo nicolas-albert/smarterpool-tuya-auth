@@ -1,6 +1,7 @@
 const path = require('path');
 
 const { version } = require('../package.json');
+const { defaultAppProfile } = require('./app-profile');
 
 const VALUE_FLAGS = new Set([
   'app-key',
@@ -104,13 +105,15 @@ function envValue(env, name) {
 
 function buildConfig(parsed, env = process.env) {
   const { flags, positionals } = parsed;
+  const appProfile = defaultAppProfile();
   const login = flags.login || positionals[0] || envValue(env, 'SMARTERPOOL_LOGIN');
   const password = flags.password || positionals[1] || envValue(env, 'SMARTERPOOL_PASSWORD');
 
   return {
-    appKey: flags.appKey || envValue(env, 'SMARTERPOOL_APP_KEY'),
-    appSecret: flags.appSecret || envValue(env, 'SMARTERPOOL_APP_SECRET'),
-    certSign: flags.certSign || envValue(env, 'SMARTERPOOL_CERT_SIGN') || 'A',
+    appKey: flags.appKey || envValue(env, 'SMARTERPOOL_APP_KEY') || appProfile.appKey,
+    appProfile: appProfile.id,
+    appSecret: flags.appSecret || envValue(env, 'SMARTERPOOL_APP_SECRET') || appProfile.appSecret,
+    certSign: flags.certSign || envValue(env, 'SMARTERPOOL_CERT_SIGN') || appProfile.certSign,
     clientDeviceId: flags.clientDeviceId || envValue(env, 'SMARTERPOOL_CLIENT_DEVICE_ID'),
     countryCode: flags.countryCode || envValue(env, 'SMARTERPOOL_COUNTRY_CODE') || '33',
     deviceId: flags.deviceId || envValue(env, 'SMARTERPOOL_DEVICE_ID'),
@@ -119,10 +122,10 @@ function buildConfig(parsed, env = process.env) {
     outputPath: flags.output ? path.resolve(flags.output) : undefined,
     password,
     raw: Boolean(flags.raw),
-    region: flags.region || envValue(env, 'SMARTERPOOL_REGION') || 'EU',
-    secret2: flags.secret2 || envValue(env, 'SMARTERPOOL_SECRET2'),
+    region: flags.region || envValue(env, 'SMARTERPOOL_REGION') || appProfile.region,
+    secret2: flags.secret2 || envValue(env, 'SMARTERPOOL_SECRET2') || appProfile.secret2,
     showSecrets: Boolean(flags.showSecrets),
-    ttid: flags.ttid || envValue(env, 'SMARTERPOOL_TTID') || 'tuya_international',
+    ttid: flags.ttid || envValue(env, 'SMARTERPOOL_TTID') || appProfile.ttid,
   };
 }
 
@@ -130,9 +133,6 @@ function validateConfig(config) {
   const missing = [];
   if (!config.login) missing.push('SMARTERPOOL_LOGIN or --login');
   if (!config.password) missing.push('SMARTERPOOL_PASSWORD or --password');
-  if (!config.appKey) missing.push('SMARTERPOOL_APP_KEY or --app-key');
-  if (!config.appSecret) missing.push('SMARTERPOOL_APP_SECRET or --app-secret');
-  if (!config.secret2) missing.push('SMARTERPOOL_SECRET2 or --secret2');
 
   if (missing.length > 0) {
     throw new UsageError(`Missing required configuration:\n- ${missing.join('\n- ')}\n\nRun with --help for usage details.`);
@@ -157,12 +157,12 @@ Options:
   --password <value>          Smarter Pool password
   --country-code <value>      Account country code, default 33
   --device-id <value>         Tuya device id to inspect
-  --app-key <value>           Tuya OEM app key
-  --app-secret <value>        Tuya OEM app secret
-  --secret2 <value>           Tuya OEM secret2
-  --cert-sign <value>         Tuya OEM cert sign, default A
-  --region <value>            Tuya region, default EU
-  --ttid <value>              Tuya ttid, default tuya_international
+  --app-key <value>           Tuya OEM app key override
+  --app-secret <value>        Tuya OEM app secret override
+  --secret2 <value>           Tuya OEM secret2 override
+  --cert-sign <value>         Tuya OEM cert sign override
+  --region <value>            Tuya region override
+  --ttid <value>              Tuya ttid override
   --client-device-id <value>  Mobile client device id override
   --env <path>                Load env file, default .env when present
   --output <path>             Write JSON output to file
@@ -174,8 +174,8 @@ Options:
 Environment:
   SMARTERPOOL_LOGIN, SMARTERPOOL_PASSWORD, SMARTERPOOL_COUNTRY_CODE
   SMARTERPOOL_DEVICE_ID
-  SMARTERPOOL_APP_KEY, SMARTERPOOL_APP_SECRET, SMARTERPOOL_SECRET2
-  SMARTERPOOL_CERT_SIGN, SMARTERPOOL_REGION, SMARTERPOOL_TTID
+  Optional overrides: SMARTERPOOL_APP_KEY, SMARTERPOOL_APP_SECRET, SMARTERPOOL_SECRET2
+  Optional overrides: SMARTERPOOL_CERT_SIGN, SMARTERPOOL_REGION, SMARTERPOOL_TTID
 `;
 }
 
