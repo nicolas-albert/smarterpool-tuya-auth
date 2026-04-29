@@ -1,0 +1,11 @@
+node_modules/
+coverage/
+npm-debug.log*
+
+.env
+*.env
+!.env.example
+
+cloud-dump*.json
+devices*.json
+*.local.json

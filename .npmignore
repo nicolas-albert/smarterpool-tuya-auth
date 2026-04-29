@@ -1,0 +1,7 @@
+.github/
+docs/
+examples/*.env.example
+test/
+*.local.json
+cloud-dump*.json
+devices*.json
