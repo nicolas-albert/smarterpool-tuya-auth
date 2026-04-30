@@ -1,6 +1,6 @@
 {
   "name": "smarterpool-auth",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Read-only helper to recover Tuya local credentials from Smarter Pool OEM accounts",
   "type": "commonjs",
   "repository": {
@@ -29,12 +29,20 @@
     "test": "npm run lint && node --test"
   },
   "keywords": [
+    "garden-pac",
+    "gardenpac",
     "home-assistant",
+    "invertech",
     "localtuya",
+    "pool-heat-pump",
+    "pool-heatpump",
+    "smarter-pool",
     "smarterpool",
     "tinytuya",
     "tuya",
-    "tuya-local"
+    "tuya-local",
+    "tuya-localkey",
+    "tuya-oem"
   ],
   "author": "Nicolas Albert",
   "license": "MIT",
